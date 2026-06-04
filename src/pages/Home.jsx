@@ -1,11 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight, FaArrowLeft, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import './Home.css';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('wood-pressed-oils');
+
+  const blogs = [
+    {
+      id: 'brown-sugar',
+      image: "https://www.nuzvidagrifarms.com/cdn/shop/articles/Organic_Brown_sugar_370x.png?v=1759230994",
+      link: "/blogs/brown-sugar"
+    },
+    {
+      id: 'buffalo-ghee',
+      image: "https://www.nuzvidagrifarms.com/cdn/shop/articles/NAF-FL1-BufaloGhee_370x.jpg?v=1759150769",
+      link: "/blogs/buffalo-ghee"
+    },
+    {
+      id: 'mineral-salt',
+      image: "https://www.nuzvidagrifarms.com/cdn/shop/articles/NAF-FL-MineralSalt_370x.jpg?v=1759150645",
+      link: "/blogs/mineral-salt"
+    },
+    {
+      id: 'real-food',
+      image: "https://www.nuzvidagrifarms.com/cdn/shop/articles/Flier_370x.jpg?v=1759298285",
+      link: "/blogs/real-food"
+    },
+    {
+      id: 'red-chilli',
+      image: "https://www.nuzvidagrifarms.com/cdn/shop/articles/NAF-FL-RedChilliPowder_370x.jpg?v=1759150731",
+      link: "/blogs/red-chilli"
+    },
+    {
+      id: 'turmeric',
+      image: "https://www.nuzvidagrifarms.com/cdn/shop/articles/NAF-FL-Turmeric_370x.jpg?v=1759150715",
+      link: "/blogs/turmeric"
+    },
+    {
+      id: 'jaggery',
+      image: "https://www.nuzvidagrifarms.com/cdn/shop/articles/NAF-FL-Jaggery_370x.jpg?v=1759150700",
+      link: "/blogs/jaggery"
+    },
+    {
+      id: 'coldpressed-oils',
+      image: "https://www.nuzvidagrifarms.com/cdn/shop/articles/NAF-FL-Oils_370x.jpg?v=1759150787",
+      link: "/blogs/coldpressed-oils"
+    },
+    {
+      id: 'a2-ghee',
+      image: "https://www.nuzvidagrifarms.com/cdn/shop/articles/NAF-FL1-A2GHEE_370x.jpg?v=1759150680",
+      link: "/blogs/a2-ghee"
+    },
+    {
+      id: 'forest-honey',
+      image: "https://www.nuzvidagrifarms.com/cdn/shop/articles/NAF-FL-Honey_fde9b232-10fa-4e95-8e25-5d109399ddf9_370x.jpg?v=1759150454",
+      link: "/blogs/forest-honey"
+    }
+  ];
+
+  const blogScrollRef = useRef(null);
+
+  const scrollBlogs = (direction) => {
+    if (blogScrollRef.current) {
+      const scrollAmount = blogScrollRef.current.offsetWidth / 2; // scroll by half container width
+      blogScrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   // Live Site Products
   const products = [
@@ -179,27 +244,21 @@ const Home = () => {
                 </div>
               </Link>
             </div>
-            
+
             {/* Right Stacked Banners */}
             <div className="promo-banners-stacked">
               <div className="promo-banner-small">
                 <Link to="/about-us" className="promo-img-link">
                   <img src="https://www.nuzvidagrifarms.com/cdn/shop/files/ABOUT_US_1200x.jpg?v=1759149023" alt="About Us" className="promo-bg-img" />
-                  <div className="promo-banner-info text-white">
-                    <h2>About Us</h2>
-                  </div>
                   <div className="banner-arrow-btn">
                     <FaArrowRight />
                   </div>
                 </Link>
               </div>
-              
+
               <div className="promo-banner-small">
                 <Link to="/our-intro" className="promo-img-link">
                   <img src="https://www.nuzvidagrifarms.com/cdn/shop/files/Our_Intro_1200x.jpg?v=1759857682" alt="Our Intro" className="promo-bg-img" />
-                  <div className="promo-banner-info text-white text-uppercase">
-                    <span className="banner-subtitle">OUR INTRO</span>
-                  </div>
                   <div className="banner-arrow-btn">
                     <FaArrowRight />
                   </div>
@@ -215,31 +274,31 @@ const Home = () => {
         <div className="container">
           <h2 className="section-title text-center">The Goodness We Share</h2>
           <div className="tabs">
-            <button 
+            <button
               className={`tab-btn ${activeTab === 'wood-pressed-oils' ? 'active' : ''}`}
               onClick={() => setActiveTab('wood-pressed-oils')}
             >
               WOOD PRESSED OILS
             </button>
-            <button 
+            <button
               className={`tab-btn ${activeTab === 'a2-ghee' ? 'active' : ''}`}
               onClick={() => setActiveTab('a2-ghee')}
             >
               A2 GHEE
             </button>
-            <button 
+            <button
               className={`tab-btn ${activeTab === 'natural-sweeteners' ? 'active' : ''}`}
               onClick={() => setActiveTab('natural-sweeteners')}
             >
               NATURAL SWEETNERS
             </button>
-            <button 
+            <button
               className={`tab-btn ${activeTab === 'countryside-grocery' ? 'active' : ''}`}
               onClick={() => setActiveTab('countryside-grocery')}
             >
               COUNTRYSIDE GROCERY
             </button>
-            <button 
+            <button
               className={`tab-btn ${activeTab === 'market-products' ? 'active' : ''}`}
               onClick={() => setActiveTab('market-products')}
             >
@@ -277,9 +336,9 @@ const Home = () => {
         </div>
         {/* Absolutely positioned product composition image on the left */}
         <div className="basket-left-img">
-          <img 
-            src="https://www.nuzvidagrifarms.com/cdn/shop/files/Monthly_banner_b0109ce9-ef11-4669-aab8-936a4c64223f_514x.png?v=1759637551" 
-            alt="Health Basket Collage" 
+          <img
+            src="https://www.nuzvidagrifarms.com/cdn/shop/files/Monthly_banner_b0109ce9-ef11-4669-aab8-936a4c64223f_514x.png?v=1759637551"
+            alt="Health Basket Collage"
           />
         </div>
       </section>
@@ -290,51 +349,43 @@ const Home = () => {
           <h2 className="section-title text-center">Experience Our Tradition</h2>
           <div className="video-container">
             <div className="video-placeholder position-relative overflow-hidden">
-              <img 
-                src="/farm-video-thumbnail.png" 
-                alt="Farm to Table Showcase" 
-                className="w-100 h-100 object-fit-cover" 
+              <img
+                src="/farm-video-thumbnail.png"
+                alt="Farm to Table Showcase"
+                className="w-100 h-100 object-fit-cover"
               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Blog & Insights */}
       <section className="blog-insights py-4">
-        <div className="container">
-          <h2 className="section-title text-center">Blog & Insights</h2>
-          <div className="blog-grid">
-            <div className="blog-card">
-              <div className="blog-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1621213032549-31e84ce00947?auto=format&fit=crop&q=80&w=400" alt="Brown Sugar" />
-              </div>
-              <div className="blog-content">
-                <h3>Brown Sugar: Pure, Wholesome Sweetness</h3>
-                <p>Rooted in tradition, discover why brown sugar is the healthier alternative...</p>
-                <Link to="#" className="read-more-link">Read More</Link>
-              </div>
+        <div className="container position-relative">
+          <h2 className="section-title text-center text-uppercase fw-bold" style={{ letterSpacing: '2px', color: '#333' }}>BLOG & INSIGHTS<span style={{ color: '#8B4513' }}>.</span></h2>
+          <div className="blog-slider-container position-relative mt-4">
+            <button className="blog-slider-btn prev-btn" onClick={() => scrollBlogs('left')} aria-label="Scroll left">
+              <FaChevronLeft />
+            </button>
+
+            <div className="blog-grid-scroll" ref={blogScrollRef}>
+              {blogs.map(blog => (
+                <div className="blog-card" key={blog.id}>
+                  <Link to={blog.link} className="blog-img-wrapper">
+                    <img src={blog.image} alt={blog.id} />
+                  </Link>
+                  <div className="blog-content">
+                    <h3 className="blog-title">
+                      <Link to={blog.link}>{blog.title}</Link>
+                    </h3>
+                    <Link to={blog.link} className="read-more-link">Read More</Link>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="blog-card">
-              <div className="blog-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1615486171447-49f3900994f1?auto=format&fit=crop&q=80&w=400" alt="Wood Pressed Oils" />
-              </div>
-              <div className="blog-content">
-                <h3>The Magic of Wood Pressed Oils</h3>
-                <p>How the ancient ghani method preserves nutrients and flavor...</p>
-                <Link to="#" className="read-more-link">Read More</Link>
-              </div>
-            </div>
-            <div className="blog-card">
-              <div className="blog-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1596647904085-300e844f2bb7?auto=format&fit=crop&q=80&w=400" alt="A2 Ghee" />
-              </div>
-              <div className="blog-content">
-                <h3>A2 Ghee: The Golden Elixir</h3>
-                <p>Understanding the difference between regular ghee and pure A2 cow ghee...</p>
-                <Link to="#" className="read-more-link">Read More</Link>
-              </div>
-            </div>
+
+            <button className="blog-slider-btn next-btn" onClick={() => scrollBlogs('right')} aria-label="Scroll right">
+              <FaChevronRight />
+            </button>
           </div>
         </div>
       </section>

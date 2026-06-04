@@ -18,11 +18,11 @@ const ProductCard = ({ product }) => {
         <h3 className="product-title">{product.title}</h3>
         <div className="product-rating">
           {[...Array(5)].map((_, i) => (
-            <Star 
-              key={i} 
-              size={14} 
-              fill={i < Math.floor(product.rating) ? "var(--color-secondary)" : "none"} 
-              color={i < Math.floor(product.rating) ? "var(--color-secondary)" : "#ccc"} 
+            <Star
+              key={i}
+              size={14}
+              fill={i < Math.floor(product.rating) ? "var(--color-secondary)" : "none"}
+              color={i < Math.floor(product.rating) ? "var(--color-secondary)" : "#ccc"}
             />
           ))}
           <span className="review-count">({product.reviews})</span>
