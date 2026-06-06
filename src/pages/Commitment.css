@@ -1,0 +1,106 @@
+/* Our Commitment Page Styling */
+
+.commitment-page-wrapper {
+  background-color: #ffffff; /* Page appears to be white */
+  padding: 60px 20px;
+}
+
+.commitment-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Top Section (Two Columns) */
+.commitment-top-section {
+  display: flex;
+  align-items: center; /* Center vertically, or flex-start? Looks like flex-start is better since text is long */
+  align-items: flex-start;
+  gap: 60px;
+  margin-bottom: 40px;
+}
+
+.commitment-image-side {
+  width: 45%;
+  position: relative;
+  /* Make room for the offset background block on the left */
+  padding-left: 30px;
+}
+
+.commitment-image-side::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  bottom: 10%;
+  left: 0;
+  width: 100px; /* It sticks out from the left */
+  background-color: #4a2b16; /* Dark brown from Nuzvid branding */
+  z-index: 0;
+}
+
+.commitment-main-img {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  border-radius: 4px;
+  display: block;
+}
+
+.commitment-text-side {
+  width: 55%;
+  padding-top: 20px; /* Align visual weight with the image */
+}
+
+.commitment-text-side h2 {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  color: #0f1f21;
+  margin-bottom: 20px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.commitment-text-side p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 25px;
+}
+
+/* Bottom Section (Full Width Text) */
+.commitment-bottom-section {
+  margin-top: 40px;
+}
+
+.commitment-bottom-section p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 25px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 991px) {
+  .commitment-top-section {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .commitment-image-side,
+  .commitment-text-side {
+    width: 100%;
+  }
+
+  .commitment-text-side {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .commitment-page-wrapper {
+    padding: 40px 15px;
+  }
+
+  .commitment-text-side h2 {
+    font-size: 22px;
+  }
+}

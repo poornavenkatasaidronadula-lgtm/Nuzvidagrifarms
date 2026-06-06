@@ -1,11 +1,44 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { FaArrowRight, FaArrowLeft, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaArrowRight, FaArrowLeft, FaChevronLeft, FaChevronRight, FaStar } from 'react-icons/fa';
+import { Leaf, Truck, ShieldCheck, Award } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { motion, AnimatePresence } from 'framer-motion';
+import { products } from '../data/products';
+import useSEO from '../hooks/useSEO';
 import './Home.css';
 
 const Home = () => {
+  useSEO({ title: 'Home', description: 'Welcome to Nuzvid Agri Farms. Pure wood-pressed oils, A2 Ghee, and organic groceries from our farm to your table.' });
   const [activeTab, setActiveTab] = useState('wood-pressed-oils');
+  const [heroBanners, setHeroBanners] = useState(['https://www.nuzvidagrifarms.com/cdn/shop/files/new_1920x.jpg?v=1759635977']);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const { data } = await supabase.from('site_settings').select('value').eq('key', 'hero_banners').single();
+        if (data?.value) setHeroBanners(JSON.parse(data.value));
+        else {
+          const localBanners = localStorage.getItem('hero_banners');
+          if (localBanners) setHeroBanners(JSON.parse(localBanners));
+        }
+      } catch (error) {
+        const localBanners = localStorage.getItem('hero_banners');
+        if (localBanners) setHeroBanners(JSON.parse(localBanners));
+      }
+    };
+    fetchBanners();
+  }, []);
+
+  useEffect(() => {
+    if (heroBanners.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroBanners.length);
+    }, 5000); // Change slide every 5 seconds
+    return () => clearInterval(interval);
+  }, [heroBanners]);
 
   const blogs = [
     {
@@ -72,164 +105,47 @@ const Home = () => {
     }
   };
 
-  // Live Site Products
-  const products = [
-    {
-      id: 1,
-      title: 'Coconut Oil',
-      price: 220,
-      rating: 5.0,
-      reviews: 12,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Oils_600x.jpg?v=1759147557',
-      category: 'wood-pressed-oils'
-    },
-    {
-      id: 2,
-      title: 'Mustard Oil',
-      price: 125,
-      rating: 5.0,
-      reviews: 8,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Oils_600x.jpg?v=1759147557',
-      category: 'wood-pressed-oils'
-    },
-    {
-      id: 3,
-      title: 'Groundnut Oil',
-      price: 390,
-      rating: 5.0,
-      reviews: 24,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Oils_600x.jpg?v=1759147557',
-      category: 'wood-pressed-oils'
-    },
-    {
-      id: 4,
-      title: 'Sesame Oil',
-      price: 525,
-      rating: 5.0,
-      reviews: 15,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Oils_600x.jpg?v=1759147557',
-      category: 'wood-pressed-oils'
-    },
-    {
-      id: 5,
-      title: 'Safflower Oil',
-      price: 545,
-      rating: 5.0,
-      reviews: 10,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Oils_600x.jpg?v=1759147557',
-      category: 'wood-pressed-oils'
-    },
-    {
-      id: 6,
-      title: 'A2 Cow Ghee 500 ml',
-      price: 1750,
-      rating: 5.0,
-      reviews: 32,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL1-A2GHEE_600x.jpg?v=1759145353',
-      category: 'a2-ghee'
-    },
-    {
-      id: 7,
-      title: 'A2 Cow Ghee 1 Liter',
-      price: 3500,
-      rating: 5.0,
-      reviews: 18,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL1-A2GHEE_600x.jpg?v=1759145353',
-      category: 'a2-ghee'
-    },
-    {
-      id: 8,
-      title: 'Forest Honey',
-      price: 199,
-      rating: 5.0,
-      reviews: 45,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Honey_600x.jpg?v=1759144691',
-      category: 'natural-sweeteners'
-    },
-    {
-      id: 9,
-      title: 'Organic Natural Sugar',
-      price: 80,
-      rating: 5.0,
-      reviews: 22,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/Organic_Brown_sugar_600x.png?v=1759199738',
-      category: 'natural-sweeteners'
-    },
-    {
-      id: 10,
-      title: 'Organic Jaggery Powder',
-      price: 80,
-      rating: 5.0,
-      reviews: 19,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Jaggery_52810e54-a591-4d63-a6e0-628fe24f18e7_600x.jpg?v=1759146500',
-      category: 'natural-sweeteners'
-    },
-    {
-      id: 11,
-      title: 'Organic Jaggery',
-      price: 80,
-      rating: 5.0,
-      reviews: 14,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Jaggery_600x.jpg?v=1759146385',
-      category: 'natural-sweeteners'
-    },
-    {
-      id: 12,
-      title: 'Himalayan Pink Salt',
-      price: 50,
-      rating: 5.0,
-      reviews: 19,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-MineralSalt_600x.jpg?v=1759145237',
-      category: 'countryside-grocery'
-    },
-    {
-      id: 13,
-      title: 'Masala Chilli Powder',
-      price: 135,
-      rating: 5.0,
-      reviews: 27,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-RedChilliPowder_600x.jpg?v=1759144186',
-      category: 'countryside-grocery'
-    },
-    {
-      id: 14,
-      title: 'Red Chilli Powder',
-      price: 180,
-      rating: 5.0,
-      reviews: 31,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-RedChilliPowder_600x.jpg?v=1759144186',
-      category: 'countryside-grocery'
-    },
-    {
-      id: 15,
-      title: 'Organic Turmeric Powder',
-      price: 125,
-      rating: 5.0,
-      reviews: 25,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Turmeric_600x.jpg?v=1759145811',
-      category: 'countryside-grocery'
-    },
-    {
-      id: 16,
-      title: 'Buffalo Ghee',
-      price: 520,
-      rating: 5.0,
-      reviews: 14,
-      image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL1-BufaloGhee_600x.jpg?v=1759148766',
-      category: 'market-products'
-    }
-  ];
-
   const filteredProducts = products.filter(p => p.category === activeTab || activeTab === 'all');
 
   return (
     <div className="home-page">
       {/* Hero Section */}
       <section className="hero-section">
-        <div className="hero-content">
-          {/* Empty content as per the original theme which uses image only */}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="hero-background"
+            style={{ backgroundImage: `url(${heroBanners[currentSlide]})` }}
+          />
+        </AnimatePresence>
+
+        {heroBanners.length > 1 && (
+          <div className="hero-dots">
+            {heroBanners.map((_, idx) => (
+              <button
+                key={idx}
+                className={`hero-dot ${idx === currentSlide ? 'active' : ''}`}
+                onClick={() => setCurrentSlide(idx)}
+              />
+            ))}
+          </div>
+        )}
       </section>
+
+      {/* Product Ticker Section */}
+      <div className="product-ticker-container">
+        <div className="product-ticker-track">
+          {[...products, ...products].map((product, index) => (
+            <span key={index} className="ticker-item">
+              <span className="ticker-bullet">✦</span> {product.title}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* Promotional Banners Section (3 Cards) */}
       <section className="promo-banners-section py-4">
@@ -359,13 +275,11 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Blog & Insights */}
       <section className="blog-insights py-4">
         <div className="container position-relative">
           <h2 className="section-title text-center text-uppercase fw-bold" style={{ letterSpacing: '2px', color: '#333' }}>BLOG & INSIGHTS<span style={{ color: '#8B4513' }}>.</span></h2>
           <div className="blog-slider-container position-relative mt-4">
-            <button className="blog-slider-btn prev-btn" onClick={() => scrollBlogs('left')} aria-label="Scroll left">
-              <FaChevronLeft />
-            </button>
 
             <div className="blog-grid-scroll" ref={blogScrollRef}>
               {blogs.map(blog => (
@@ -383,10 +297,126 @@ const Home = () => {
               ))}
             </div>
 
-            <button className="blog-slider-btn next-btn" onClick={() => scrollBlogs('right')} aria-label="Scroll right">
-              <FaChevronRight />
-            </button>
           </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="why-choose-us py-4">
+        <div className="container">
+          <h2 className="section-title text-center text-uppercase fw-bold" style={{ letterSpacing: '2px', color: '#333' }}>Why Choose Us<span style={{ color: '#8B4513' }}>.</span></h2>
+          <div className="features-grid mt-4">
+            <div className="feature-card">
+              <div className="feature-icon"><Leaf size={40} /></div>
+              <h3>100% Organic</h3>
+              <p>Grown without synthetic pesticides or harmful fertilizers.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon"><Award size={40} /></div>
+              <h3>Premium Quality</h3>
+              <p>Carefully handpicked and processed to retain maximum nutrition.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon"><ShieldCheck size={40} /></div>
+              <h3>Lab Tested</h3>
+              <p>Every batch is rigorously tested to ensure purity and safety.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon"><Truck size={40} /></div>
+              <h3>Fast Delivery</h3>
+              <p>Direct from our farm to your doorstep in pristine condition.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="testimonials-section py-4">
+        <div className="container">
+          <h2 className="section-title text-center text-uppercase fw-bold" style={{ letterSpacing: '2px', color: '#333' }}>What Our Customers Say<span style={{ color: '#8B4513' }}>.</span></h2>
+          <div className="testimonials-scroll-container mt-4">
+            <div className="testimonials-scroll-track">
+              {/* Original 3 Cards */}
+              <div className="testimonial-card">
+                <div className="stars">
+                  {[...Array(5)].map((_, i) => <FaStar key={i} color="#ffc107" />)}
+                </div>
+                <p className="testimonial-text">"The A2 Ghee from Nuzvid Agri Farms is incredibly authentic. The aroma takes me back to my childhood village!"</p>
+                <h4 className="testimonial-author">- Priya S.</h4>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">
+                  {[...Array(5)].map((_, i) => <FaStar key={i} color="#ffc107" />)}
+                </div>
+                <p className="testimonial-text">"I've been using their wood-pressed groundnut oil for all my cooking. You can literally taste the purity."</p>
+                <h4 className="testimonial-author">- Rahul M.</h4>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">
+                  {[...Array(5)].map((_, i) => <FaStar key={i} color="#ffc107" />)}
+                </div>
+                <p className="testimonial-text">"Excellent quality natural sweeteners. The forest honey is a staple in my morning tea now. Highly recommend!"</p>
+                <h4 className="testimonial-author">- Anita K.</h4>
+              </div>
+
+              {/* Duplicated for Seamless Infinite Loop */}
+              <div className="testimonial-card">
+                <div className="stars">
+                  {[...Array(5)].map((_, i) => <FaStar key={i} color="#ffc107" />)}
+                </div>
+                <p className="testimonial-text">"The A2 Ghee from Nuzvid Agri Farms is incredibly authentic. The aroma takes me back to my childhood village!"</p>
+                <h4 className="testimonial-author">- Priya S.</h4>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">
+                  {[...Array(5)].map((_, i) => <FaStar key={i} color="#ffc107" />)}
+                </div>
+                <p className="testimonial-text">"I've been using their wood-pressed groundnut oil for all my cooking. You can literally taste the purity."</p>
+                <h4 className="testimonial-author">- Rahul M.</h4>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">
+                  {[...Array(5)].map((_, i) => <FaStar key={i} color="#ffc107" />)}
+                </div>
+                <p className="testimonial-text">"Excellent quality natural sweeteners. The forest honey is a staple in my morning tea now. Highly recommend!"</p>
+                <h4 className="testimonial-author">- Anita K.</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Recently Viewed Products */}
+      {(() => {
+        const viewedIds = JSON.parse(localStorage.getItem('recently_viewed') || '[]');
+        if (viewedIds.length === 0) return null;
+        
+        const viewedProducts = viewedIds.map(id => products.find(p => p.id === id)).filter(Boolean);
+        if (viewedProducts.length === 0) return null;
+
+        return (
+          <section className="recently-viewed-section py-4" style={{ backgroundColor: '#f9fafb' }}>
+            <div className="container">
+              <h2 className="section-title text-center text-uppercase fw-bold" style={{ letterSpacing: '2px', color: '#333' }}>Recently Viewed<span style={{ color: '#8B4513' }}>.</span></h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginTop: '30px' }}>
+                {viewedProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      })()}
+
+      {/* Newsletter Section */}
+      <section className="newsletter-section">
+        <div className="container text-center">
+          <h2>Join Our Farm Family</h2>
+          <p>Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.</p>
+          <form className="newsletter-form" onSubmit={(e) => { e.preventDefault(); alert('Subscribed!'); }}>
+            <input type="email" placeholder="Enter your email address" required />
+            <button type="submit" className="btn-primary">Subscribe</button>
+          </form>
         </div>
       </section>
     </div>
@@ -394,3 +424,4 @@ const Home = () => {
 };
 
 export default Home;
+

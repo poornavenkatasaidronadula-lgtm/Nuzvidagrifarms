@@ -1,17 +1,41 @@
-import React from 'react';
-import { Star } from 'lucide-react';
+import React, { useState } from 'react';
+import { Star, Heart, ShoppingBag, Eye } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
+  const { addToCart } = useCart();
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  
   return (
     <div className="product-card">
       <div className="product-image-wrapper">
+        <div className="product-badges">
+          {product.isNew && <span className="badge new">New</span>}
+          {product.sale && <span className="badge sale">Sale</span>}
+        </div>
+        <button 
+          className={`wishlist-btn ${isWishlisted ? 'active' : ''}`}
+          onClick={() => setIsWishlisted(!isWishlisted)}
+          aria-label="Add to wishlist"
+        >
+          <Heart size={18} fill={isWishlisted ? "var(--color-primary)" : "none"} color={isWishlisted ? "var(--color-primary)" : "#333"} />
+        </button>
+
         <img src={product.image} alt={product.title} className="primary-img" />
         {product.hoverImage && (
           <img src={product.hoverImage} alt={product.title} className="hover-img" />
         )}
+        
         <div className="product-actions">
-          <button className="btn-primary full-width">Add to Cart</button>
+          <button className="action-btn cart-btn" onClick={() => addToCart(product)} title="Add to Cart">
+            <ShoppingBag size={18} />
+            <span>Add to Cart</span>
+          </button>
+          <Link to={`/product/${product.id}`} className="action-btn details-btn" title="View Details">
+            <Eye size={18} />
+          </Link>
         </div>
       </div>
       <div className="product-info">
@@ -27,7 +51,12 @@ const ProductCard = ({ product }) => {
           ))}
           <span className="review-count">({product.reviews})</span>
         </div>
-        <p className="product-price">₹{product.price.toFixed(2)}</p>
+        <div className="product-price-wrapper">
+          {product.mrp && product.mrp > product.price && (
+            <span className="product-mrp">₹{product.mrp.toFixed(2)}</span>
+          )}
+          <span className="product-price">₹{product.price.toFixed(2)}</span>
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, User, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Search, Heart } from 'lucide-react';
 import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import './Header.css';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const { cartItems } = useCart();
+  const { user, isAdmin, logoutMock } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -24,6 +29,12 @@ const Header = () => {
     { name: 'Our Commitment', path: '/our-commitment' },
     { name: 'Contact', path: '/contact' },
   ];
+
+  const handleLogout = async () => {
+    logoutMock();
+    await supabase.auth.signOut();
+    setIsUserDropdownOpen(false);
+  };
 
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
@@ -68,11 +79,45 @@ const Header = () => {
 
           <div className="nav-actions">
             <Link to="/products" className="btn-primary shop-now-btn">Shop Now</Link>
-            <button className="icon-btn"><User size={20} /></button>
-            <button className="icon-btn cart-btn">
-              <ShoppingCart size={20} />
-              <span className="cart-count">0</span>
+            <button className="icon-btn" aria-label="Search">
+              <Search size={22} />
             </button>
+            
+            {user ? (
+              <div className="user-dropdown-container" style={{ position: 'relative' }}>
+                <button 
+                  className="icon-btn" 
+                  onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                  aria-label="User Account"
+                >
+                  <User size={22} />
+                </button>
+                {isUserDropdownOpen && (
+                  <div className="user-dropdown-menu" style={{ position: 'absolute', top: '100%', right: '0', background: 'white', padding: '10px 0', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)', width: '150px', zIndex: 100 }}>
+                    <Link to="/account" onClick={() => setIsUserDropdownOpen(false)} style={{ display: 'block', padding: '10px 20px', color: '#333', textDecoration: 'none' }}>My Account</Link>
+                    <button onClick={handleLogout} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 20px', color: '#ff4d4f', border: 'none', background: 'none', cursor: 'pointer' }}>Logout</button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/login" className="icon-btn" aria-label="Login">
+                <User size={22} />
+              </Link>
+            )}
+
+            <Link to="/wishlist" className="icon-btn cart-btn" aria-label="Wishlist">
+              <Heart size={22} />
+              {/* If you wanted a count: wishlistItems.length > 0 && <span className="cart-count">{wishlistItems.length}</span> */}
+            </Link>
+
+            <Link to="/cart" className="icon-btn cart-btn" aria-label="Shopping Cart">
+              <ShoppingCart size={22} />
+              {cartItems.reduce((acc, item) => acc + item.quantity, 0) > 0 && (
+                <span className="cart-count">
+                  {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                </span>
+              )}
+            </Link>
             <button
               className="icon-btn mobile-menu-toggle"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

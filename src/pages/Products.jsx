@@ -1,26 +1,76 @@
-import React from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FaEye, FaShoppingCart, FaHeart } from 'react-icons/fa';
+import { products } from '../data/products';
+import ProductCard from '../components/ProductCard';
+import useSEO from '../hooks/useSEO';
 import './Products.css';
 
 const Products = () => {
-  const products = [
-    { id: 1, title: 'A2 Cow Ghee 1 Liter', price: 3500, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL1-A2GHEE_600x.jpg?v=1759145353' },
-    { id: 2, title: 'A2 Cow Ghee 500 ml', price: 1750, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL1-A2GHEE_600x.jpg?v=1759145353' },
-    { id: 3, title: 'Buffalo Ghee', price: 520, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL1-BufaloGhee_600x.jpg?v=1759148766' },
-    { id: 4, title: 'Masala Chilli Powder', price: 135, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-RedChilliPowder_600x.jpg?v=1759144186' },
-    { id: 5, title: 'Mineral Salt', price: 50, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-MineralSalt_600x.jpg?v=1759145237' },
-    { id: 6, title: 'Forest Honey', price: 199, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Honey_600x.jpg?v=1759144691' },
-    { id: 7, title: 'Organic Jaggery', price: 80, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Jaggery_600x.jpg?v=1759146385' },
-    { id: 8, title: 'Organic Jaggery Powder', price: 80, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Jaggery_52810e54-a591-4d63-a6e0-628fe24f18e7_600x.jpg?v=1759146500' },
-    { id: 9, title: 'Organic Natural Sugar', price: 80, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/Organic_Brown_sugar_600x.png?v=1759199738' },
-    { id: 10, title: 'Red Chilli Powder', price: 180, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-RedChilliPowder_600x.jpg?v=1759144186' },
-    { id: 11, title: 'Organic Turmeric Powder', price: 125, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Turmeric_600x.jpg?v=1759145811' },
-    { id: 12, title: 'Coconut Oil', price: 220, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Oils_600x.jpg?v=1759147557' },
-    { id: 13, title: 'Groundnut Oil', price: 390, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Oils_600x.jpg?v=1759147557' },
-    { id: 14, title: 'Mustard Oil', price: 125, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Oils_600x.jpg?v=1759147557' },
-    { id: 15, title: 'Safflower Oil', price: 545, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Oils_600x.jpg?v=1759147557' },
-    { id: 16, title: 'Sesame Oil', price: 525, image: 'https://www.nuzvidagrifarms.com/cdn/shop/files/NAF-FL-Oils_600x.jpg?v=1759147557' },
-  ];
+  useSEO({ title: 'Shop All Products', description: 'Browse our wide range of premium organic food products, cold pressed oils, and A2 Ghee.' });
+  const [category, setCategory] = useState('All');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [sortOrder, setSortOrder] = useState('featured');
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
+  // Derive categories and counts
+  const categories = useMemo(() => {
+    const cats = { 'All': products.length };
+    products.forEach(p => {
+      cats[p.category] = (cats[p.category] || 0) + 1;
+    });
+    return cats;
+  }, []);
+
+  const filteredProducts = useMemo(() => {
+    let result = [...products];
+
+    // Category
+    if (category !== 'All') {
+      result = result.filter(p => p.category === category);
+    }
+
+    // Stock
+    // Since we don't have stock data in mock yet, let's assume all are in stock, or filter randomly. 
+    // We'll skip actual stock filtering until we have real DB data.
+
+    // Price
+    const min = parseFloat(minPrice);
+    const max = parseFloat(maxPrice);
+    if (!isNaN(min)) result = result.filter(p => p.price >= min);
+    if (!isNaN(max)) result = result.filter(p => p.price <= max);
+
+    // Sorting
+    switch (sortOrder) {
+      case 'price-asc':
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case 'alpha-asc':
+        result.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case 'alpha-desc':
+        result.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case 'date-desc':
+        result.sort((a, b) => b.id - a.id);
+        break;
+      default:
+        break; // featured (original order)
+    }
+
+    return result;
+  }, [category, minPrice, maxPrice, sortOrder, inStockOnly]);
 
   return (
     <div className="products-page">
@@ -40,21 +90,36 @@ const Products = () => {
       {/* Page Body */}
       <div className="products-body">
 
-        {/* LEFT SIDEBAR */}
         <aside className="products-sidebar">
+          <button 
+            className="mobile-filter-toggle"
+            onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+          >
+            {isMobileFilterOpen ? 'Hide Filters' : 'Show Filters'}
+          </button>
 
-          {/* Categories */}
-          <div className="sidebar-widget">
+          <div className={`sidebar-content ${isMobileFilterOpen ? 'open' : ''}`}>
+            {/* Categories */}
+            <div className="sidebar-widget">
             <div className="sidebar-widget-header">
               <span className="widget-title"><span className="dash-mark">--</span><span className="dot-mark">·</span> Categories</span>
-              <span className="widget-toggle">−</span>
             </div>
             <ul className="widget-list">
-              <li><a href="#">A2 Ghee (2)</a></li>
-              <li><a href="#">Countryside Grocery (4)</a></li>
-              <li><a href="#">Market Products (1)</a></li>
-              <li><a href="#">Natural Sweeteners (4)</a></li>
-              <li><a href="#">Wood Pressed Oils (5)</a></li>
+              {Object.entries(categories).map(([catName, count]) => (
+                <li key={catName}>
+                  <button 
+                    onClick={() => setCategory(catName)}
+                    style={{
+                      background: 'none', border: 'none', padding: 0, textAlign: 'left',
+                      cursor: 'pointer', color: category === catName ? '#2d7a5c' : '#555',
+                      fontWeight: category === catName ? '700' : '500',
+                      fontSize: '14px', transition: 'all 0.2s'
+                    }}
+                  >
+                    {catName} <span style={{ color: '#9ca3af', fontWeight: 'normal' }}>({count})</span>
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -62,19 +127,12 @@ const Products = () => {
           <div className="sidebar-widget">
             <div className="sidebar-widget-header">
               <span className="widget-title"><span className="dash-mark">--</span><span className="dot-mark">·</span> Availability</span>
-              <span className="widget-toggle">−</span>
             </div>
             <ul className="widget-list">
               <li>
-                <label className="checkbox-label">
-                  <input type="checkbox" />
-                  <span>In Stock <span style={{ color: '#2d7a5c' }}>(16)</span></span>
-                </label>
-              </li>
-              <li>
-                <label className="checkbox-label">
-                  <input type="checkbox" />
-                  <span>Out Of Stock <span style={{ color: '#2d7a5c' }}>(0)</span></span>
+                <label className="checkbox-label" style={{ cursor: 'pointer' }}>
+                  <input type="checkbox" checked={inStockOnly} onChange={(e) => setInStockOnly(e.target.checked)} />
+                  <span>In Stock</span>
                 </label>
               </li>
             </ul>
@@ -84,21 +142,20 @@ const Products = () => {
           <div className="sidebar-widget">
             <div className="sidebar-widget-header">
               <span className="widget-title"><span className="dash-mark">--</span><span className="dot-mark">·</span> Price</span>
-              <span className="widget-toggle">−</span>
             </div>
             <div className="price-range-box">
               <div className="price-row">
                 <div className="price-col">
                   <label className="price-label">From ₹</label>
-                  <input type="number" defaultValue="0" className="price-input-box" />
+                  <input type="number" placeholder="0" className="price-input-box" value={minPrice} onChange={e => setMinPrice(e.target.value)} />
                 </div>
                 <div className="price-col">
                   <label className="price-label">To ₹</label>
-                  <input type="number" defaultValue="3500.00" className="price-input-box" />
+                  <input type="number" placeholder="5000" className="price-input-box" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} />
                 </div>
               </div>
-              <button className="filter-btn">Filter</button>
             </div>
+          </div>
           </div>
 
         </aside>
@@ -109,40 +166,32 @@ const Products = () => {
           {/* Toolbar */}
           <div className="products-toolbar">
             <div className="toolbar-left">
-              <button className="view-btn active">⊞</button>
-              <button className="view-btn">☰</button>
+              <span style={{ fontSize: '14px', color: '#6b7280' }}>Showing {filteredProducts.length} results</span>
             </div>
             <div className="toolbar-center">
-              <select className="sort-select">
-                <option>Alphabetically, A-Z</option>
-                <option>Alphabetically, Z-A</option>
-                <option>Price, low to high</option>
-                <option>Price, high to low</option>
+              <select className="sort-select" value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
+                <option value="featured">Sort by: Featured</option>
+                <option value="alpha-asc">Alphabetically, A-Z</option>
+                <option value="alpha-desc">Alphabetically, Z-A</option>
+                <option value="price-asc">Price, low to high</option>
+                <option value="price-desc">Price, high to low</option>
+                <option value="date-desc">Date, new to old</option>
               </select>
-            </div>
-            <div className="toolbar-right">
-              <strong>Showing 1 - 16 of 16 result</strong>
             </div>
           </div>
 
-          {/* Product Grid */}
+          {/* Grid */}
           <div className="products-grid">
-            {products.map(product => (
-              <div className="product-card" key={product.id}>
-                <div className="product-img-box">
-                  <img src={product.image} alt={product.title} />
-                  <div className="card-hover-actions">
-                    <button className="card-action-btn" title="Quick View"><FaEye /></button>
-                    <button className="card-action-btn" title="Add to Cart"><FaShoppingCart /></button>
-                    <button className="card-action-btn" title="Add to Wishlist"><FaHeart /></button>
-                  </div>
-                </div>
-                <div className="product-card-info">
-                  <h3 className="product-card-title">{product.title}</h3>
-                  <p className="product-card-price">Rs. {product.price.toFixed(2)}</p>
-                </div>
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            ) : (
+              <div style={{ padding: '40px', textAlign: 'center', gridColumn: '1 / -1' }}>
+                <h3>No products match your criteria.</h3>
+                <button onClick={() => { setCategory('All'); setMinPrice(''); setMaxPrice(''); }} className="btn-primary" style={{ marginTop: '16px' }}>Clear Filters</button>
               </div>
-            ))}
+            )}
           </div>
 
         </div>
@@ -152,3 +201,4 @@ const Products = () => {
 };
 
 export default Products;
+

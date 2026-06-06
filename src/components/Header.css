@@ -149,12 +149,20 @@
 }
 
 .cart-count {
-  background-color: transparent;
-  color: var(--color-text);
-  font-size: 15px;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4d4f;
+  color: white;
+  font-size: 11px;
   font-weight: 800;
-  margin-left: 5px;
-  display: inline-block;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0;
 }
 
 .shop-now-btn {
@@ -228,5 +236,19 @@
 
   .top-bar {
     display: none;
+  }
+
+  .nav-actions {
+    gap: 5px;
+  }
+
+  .icon-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 5px;
+  }
+
+  .logo-img {
+    max-width: 110px;
   }
 }

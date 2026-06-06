@@ -157,8 +157,13 @@
 }
 
 @media (max-width: 768px) {
-  .footer-grid, .value-prop-grid {
+  .footer-grid {
     grid-template-columns: 1fr;
+  }
+  .value-prop-grid {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 30px;
+    column-gap: 10px;
   }
   .copyright-inner {
     flex-direction: column;

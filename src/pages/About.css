@@ -1,0 +1,255 @@
+/* About Us Page Styling */
+
+.about-page-wrapper {
+  background-color: #fcf9f2;
+}
+
+/* Hero Banner */
+.about-hero {
+  width: 100%;
+  height: 250px;
+  background-color: #3b2a21; /* fallback color */
+  background-image: url('https://www.nuzvidagrifarms.com/cdn/shop/files/new_1920x.jpg?v=1759635977'); /* Placeholder, needs to be updated with actual banner */
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Align text to the right like in the screenshot */
+  padding-right: 10%;
+}
+
+.about-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.about-hero-text {
+  position: relative;
+  z-index: 2;
+  color: white;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.about-hero-text a {
+  color: white;
+  text-decoration: none;
+  margin-right: 5px;
+}
+
+.about-hero-text span {
+  color: var(--color-primary);
+  margin-left: 5px;
+}
+
+/* Sections General */
+.about-section {
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Our Story (Section 1) */
+.story-container {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+.story-image-side {
+  width: 45%;
+  position: relative;
+}
+
+.main-story-img {
+  width: 100%;
+  border-radius: 4px;
+  display: block;
+}
+
+.experience-badge {
+  position: absolute;
+  bottom: -30px;
+  right: -30px;
+  background-color: #4a2b16;
+  color: white;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  border: 10px solid #fcf9f2; /* Matches background to create the cutout effect */
+}
+
+.experience-badge h3 {
+  font-family: var(--font-heading);
+  font-size: 48px;
+  margin: 0;
+  line-height: 1;
+  color: #ffffff !important;
+}
+
+.experience-badge p {
+  font-size: 14px;
+  margin: 5px 0 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #ffffff !important;
+}
+
+.story-text-side {
+  width: 55%;
+}
+
+.subtitle {
+  color: #4a2b16;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}
+
+.story-text-side h2 {
+  font-family: var(--font-heading);
+  font-size: 54px;
+  color: #0f1f21;
+  line-height: 1.1;
+  margin-bottom: 30px;
+}
+
+.vertical-line-text {
+  border-left: 3px solid #8c5a3d;
+  padding-left: 20px;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+.story-body-text {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.8;
+}
+
+/* Our Mission (Section 2) */
+.mission-header {
+  margin-bottom: 60px;
+}
+
+.mission-header h2 {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  color: #0f1f21;
+  margin-bottom: 15px;
+}
+
+.mission-header h4 {
+  font-style: italic;
+  color: #555;
+  font-weight: normal;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.mission-header p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.8;
+  max-width: 900px;
+}
+
+.mission-container {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+.mission-image-side {
+  width: 40%;
+  position: relative;
+  padding-left: 30px;
+}
+
+.mission-image-side::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20px;
+  bottom: 20px;
+  width: 15px;
+  background-color: #4a2b16;
+}
+
+.mission-img {
+  width: 100%;
+  display: block;
+}
+
+.mission-text-side {
+  width: 60%;
+}
+
+.mission-text-side p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 25px;
+}
+
+.mission-text-side p strong {
+  color: #0f1f21;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 991px) {
+  .story-container,
+  .mission-container {
+    flex-direction: column;
+    gap: 50px;
+  }
+
+  .story-image-side,
+  .story-text-side,
+  .mission-image-side,
+  .mission-text-side {
+    width: 100%;
+  }
+
+  .experience-badge {
+    width: 140px;
+    height: 140px;
+    bottom: -20px;
+    right: -10px;
+    border-width: 6px;
+  }
+
+  .experience-badge h3 {
+    font-size: 36px;
+  }
+
+  .story-text-side h2 {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .story-text-side h2 {
+    font-size: 32px;
+  }
+  
+  .mission-header h2 {
+    font-size: 26px;
+  }
+  
+  .vertical-line-text {
+    font-size: 16px;
+  }
+}

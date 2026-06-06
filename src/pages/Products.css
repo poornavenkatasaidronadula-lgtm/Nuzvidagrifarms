@@ -383,6 +383,38 @@
   }
 }
 
+/* ===== MOBILE FILTER TOGGLE ===== */
+.mobile-filter-toggle {
+  display: none;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  background-color: #5c3116;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.sidebar-content {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .mobile-filter-toggle {
+    display: block;
+  }
+  
+  .sidebar-content {
+    display: none;
+  }
+  
+  .sidebar-content.open {
+    display: block;
+  }
+}
+
 /* ===== QUICK VIEW MODAL ===== */
 .quickview-overlay {
   position: fixed;

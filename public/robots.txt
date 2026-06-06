@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow admin routes or private account routes
+Disallow: /admin/
+Disallow: /account/
+Disallow: /checkout/
+
+Sitemap: https://www.nuzvidagrifarms.com/sitemap.xml
